@@ -5,7 +5,7 @@ import {
     forgetpasswordController,
     checkcodeController,
     resetPasswordController
-} from "../controllers/auth.js";
+} from "../controllers/auth/auth.js";
 import multer from "../middlewares/multer/multer.js";
 import validator from "../middlewares/validator/index.js";
 

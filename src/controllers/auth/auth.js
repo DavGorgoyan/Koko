@@ -1,11 +1,10 @@
-import { _WRONG_PARAMS_, _WRONG_LOGIN_OR_PASSWORD,_TOKEN_IS_WRONG_,_RESET_CODE_IS_WRONG_ } from "../helpers/err-codes.js";
-import { getResponseTemplate, hashingString, sendEmail } from "../lib/index.js";
+
+import { _WRONG_PARAMS_, _WRONG_LOGIN_OR_PASSWORD,_TOKEN_IS_WRONG_,_RESET_CODE_IS_WRONG_ } from "../../helpers/err-codes.js";
+import { getResponseTemplate, hashingString, sendEmail } from "../../lib/index.js";
 import { v4 as uuid } from "uuid"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { insert, select, update,exec } from "../providers/db/operations.js";
-
-
+import { insert, select, update,exec } from "../../providers/db/operations.js";
 
 export const registerController = async (req, res) => {
     const result = getResponseTemplate();
@@ -15,6 +14,7 @@ export const registerController = async (req, res) => {
         if (payload.email == selectedemail) {
             throw { code: 4060, message: `Էլ․հասցեն օգտագործվում է`, status: 406};
         }
+
         payload.uid = uuid();
         payload.password = await hashingString(payload.password);
         await insert(`users`, payload);
@@ -32,13 +32,13 @@ export const registerController = async (req, res) => {
 }
 
 
-export const loginController = async (req,res) => {
+export const loginController = async (req,res) => { 
     const result = getResponseTemplate();
     try {
-            const query = "SELECT uid, email, password FROM users " +
+            const query = "SELECT uid, email, password, 'users' AS type FROM users " +
                           "WHERE email = ? " + 
                           "UNION " +
-                          "SELECT uid, email, password FROM admin " +
+                          "SELECT uid, email, password, 'admin' AS type FROM admin " +
                           "WHERE email = ? ";
             const [currentUser] = await exec(query, [req.body.email, req.body.email]);
             if (!currentUser) throw _WRONG_LOGIN_OR_PASSWORD;
@@ -46,10 +46,12 @@ export const loginController = async (req,res) => {
             const compare = await bcrypt.compare(req.body.password, currentUser.password);
             if (!compare) throw _WRONG_LOGIN_OR_PASSWORD;
     
+            const secret_key = currentUser.type == 'users' ? process.env.SECRET_KEY : process.env.SECRET_KEY_ADMIN; 
             const token = jwt.sign({
                 uid: currentUser.uid
-            }, process.env.SECRET_KEY, { expiresIn: 60 * 60 * 24 * 365 });
-            result.data.token = token;
+            }, secret_key, { expiresIn: 60 * 60 * 24 * 365 });
+
+            result.data = { token, type: currentUser.type };
         
     } catch (err) {
         result.meta.error = {
