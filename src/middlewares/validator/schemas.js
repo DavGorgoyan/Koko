@@ -10,6 +10,8 @@ export default {
         }
     }),
     reset_password: Joi.object({
-        password: Joi.string().min(8).max(16).required(),
+        files: {},
+        fields: {
+        password: Joi.string().min(8).max(16).required(), }
     }),
 }

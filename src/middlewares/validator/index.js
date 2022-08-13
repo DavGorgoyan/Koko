@@ -26,7 +26,7 @@ const validate = (type) => (req, res, next) => {
         
 
         const { error } = currentValidation.validate(payload);
-        if (error) throw _WRONG_PARAMS_;
+        if (error) throw _VALIDATION_ERROR_;
     }
     next();
 }
