@@ -10,7 +10,6 @@ export const registerController = async (req, res) => {
     try {
         const payload = req.body;
         const [{ email: selectedemail }] = await select(`admin`,["email"]);
-        console.log(selectedemail);
         if (payload.email == selectedemail) {
             throw { code: 4060, message: `Էլ․հասցեն օգտագործվում է`, status: 406};
         }
