@@ -21,7 +21,7 @@ export const getBlogContoller = async (req, res) => {
 export const addBlogController = async (req, res) => {
     const result = getResponseTemplate();
     try {
-        await insert(`blog`, { ...req.body }, { uid: req.user.uid, });
+        await insert(`blog`, { uid: req.user.uid, ...req.body });
         result.data.message = "Request has ended siccessfully !!!";
 
     } catch (err) {
