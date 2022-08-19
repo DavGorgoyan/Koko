@@ -123,7 +123,10 @@ export const addCommentController = async (req, res) => {
 export const likeBlogController = async (req, res) => {
     const result = getResponseTemplate();
     try {
-        await insert(`rate`, { uid: req.user.uid, blog_id: req.query.id, type: 1 })
+        if (req.query.rate == 1)
+            await insert(`rate`, { uid: req.user.uid, blog_id: req.query.id, type: 1 })
+        else if (req.query.rate == -1)
+            await insert(`rate`, { uid: req.user.uid, blog_id: req.query.id, type: -1 })
         result.data.message = "Request has ended successfully !!!";
 
     } catch (err) {
@@ -166,4 +169,20 @@ export const deleteCommentController = async (req, res) => {
         result.meta.status = err.status || err.statusCode || 500;
     }
     res.status(result.meta.status).json(result);
+}
+
+export const updateCommentsController = async (req, res) => {
+    const result = getResponseTemplate();
+    try {
+        await update(`comments`, req.body, { id: req.params.id })
+        result.data.message = "Request has ended successfully !!!"
+
+    } catch (err) {
+        result.meta.error = {
+            code: err.code || err.errCode || 5000,
+            message: err.message || err.errMessage || "Unknown Error"
+        };
+        result.meta.status = err.status || err.statusCode || 500;
+    }
+    res.status(result.meta.status).json(result)
 }

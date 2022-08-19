@@ -8,7 +8,8 @@ import {
     addCommentController,
     likeBlogController,
     dislikeBlogController,
-    deleteCommentController
+    deleteCommentController,
+    updateCommentsController
 } from "../../controllers/user/common_blogs.js";
 const router = Router();
 
@@ -17,10 +18,10 @@ router.get("/lastTenBlogs", getLastTenBlogsController);
 router.get("/getBlogsPaginated", getPaginatedBlogsController);
 router.get("/currentBlog/:id", getCurrentBlogControlller);
 router.get("/comments/:id", getCommentsToBlogController);
-router.post("", addCommentController);
-router.delete("", deleteCommentController)
-router.post("/likeBlog", likeBlogController);
-router.post("/dislikeBlog", dislikeBlogController);
+router.post("/comment", addCommentController);
+router.delete("/comment", deleteCommentController)
+router.put("/comment/:id", updateCommentsController)
+router.post("/rateBlog", likeBlogController);
 
 
 export default router;
