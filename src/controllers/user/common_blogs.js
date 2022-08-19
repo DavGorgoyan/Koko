@@ -44,7 +44,7 @@ export const getLastTenBlogsController = async (req, res) => {
     res.status(result.meta.status).json(result);
 }
 
-export const getPaginatedBlogsController = async (req, res) => {
+export const getAllBlogsController = async (req, res) => {
     const result = getResponseTemplate();
     try {
         const { page = 1, rowsPerPage = 10 } = req.query;
@@ -68,10 +68,13 @@ export const getCurrentBlogControlller = async (req, res) => {
     const result = getResponseTemplate();
     try {
         const [selected] = await select("blog", "*", { id: req.params.id });
-        let view = selected.views;
-        view++;
-        await update(`blog`, { views: view }, { id: req.params.id })
-        result.data = selected;
+        if (selected) {
+            let view = selected.views;
+            view++;
+            await update(`blog`, { views: view }, { id: req.params.id })
+            result.data = selected;
+        } else
+            result.data = {};
 
     } catch (err) {
         result.meta.error = {
@@ -87,7 +90,7 @@ export const getCommentsToBlogController = async (req, res) => {
     const result = getResponseTemplate();
     try {
         const query =
-            "SELECT c.id,c.description,u.fullname,u.image FROM comments c " +
+            "SELECT c.id,c.description,u.fullname,u.image,u.uid FROM comments c " +
             "LEFT JOIN users u " +
             "ON c.uid = u.uid " +
             "WHERE c.blog_id = ?";
@@ -123,10 +126,7 @@ export const addCommentController = async (req, res) => {
 export const rateBlogController = async (req, res) => {
     const result = getResponseTemplate();
     try {
-        if (req.query.rate == 1)
-            await insert(`rate`, { uid: req.user.uid, blog_id: req.query.id, type: 1 })
-        else if (req.query.rate == -1)
-            await insert(`rate`, { uid: req.user.uid, blog_id: req.query.id, type: -1 })
+        await insert(`rate`, { uid: req.user.uid, blog_id: req.query.id, type: req.query.rate })
         result.data.message = "Request has ended successfully !!!";
 
     } catch (err) {
@@ -142,7 +142,7 @@ export const rateBlogController = async (req, res) => {
 export const deleteCommentController = async (req, res) => {
     const result = getResponseTemplate();
     try {
-        await remove(`comments`, { id: req.params.id });
+        await remove(`comments`, { id: req.params.id, uid: req.user.uid });
         result.data.message = "Request has ended successfully !!!"
 
     } catch (err) {
@@ -158,7 +158,7 @@ export const deleteCommentController = async (req, res) => {
 export const updateCommentsController = async (req, res) => {
     const result = getResponseTemplate();
     try {
-        await update(`comments`, req.body, { id: req.params.id })
+        await update(`comments`, req.body, { id: req.params.id, uid: req.user.uid })
         result.data.message = "Request has ended successfully !!!"
 
     } catch (err) {

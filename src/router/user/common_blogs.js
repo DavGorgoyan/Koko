@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
     getGreatestRateBlogsController,
     getLastTenBlogsController,
-    getPaginatedBlogsController,
+    getAllBlogsController,
     getCurrentBlogControlller,
     getCommentsToBlogController,
     addCommentController,
@@ -14,7 +14,7 @@ const router = Router();
 
 router.get("/greatestRate", getGreatestRateBlogsController);
 router.get("/lastTenBlogs", getLastTenBlogsController);
-router.get("/getBlogsPaginated", getPaginatedBlogsController);
+router.get("/getBlogs", getAllBlogsController);
 router.get("/currentBlog/:id", getCurrentBlogControlller);
 router.get("/comments/:id", getCommentsToBlogController);
 router.post("/comment", addCommentController);

@@ -5,7 +5,7 @@ import { exec, insert, remove, select, update } from "../../providers/db/operati
 export const getBlogContoller = async (req, res) => {
     const result = getResponseTemplate();
     try {
-        const selected = await select(`blog`, ["id", "title", "image"]);
+        const selected = await select(`blog`, ["id", "title", "image"], { uid: req.user.uid });
         result.data = selected;
 
     } catch (err) {
@@ -53,7 +53,7 @@ export const updateBlogController = async (req, res) => {
 export const deleteBlogController = async (req, res) => {
     const result = getResponseTemplate();
     try {
-        await remove(`blog`, { id: req.params.id });
+        await remove(`blog`, { id: req.params.id, uid: req.user.uid });
         result.data.message = "Request has ended successfully !!!"
 
     } catch (err) {

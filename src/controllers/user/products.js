@@ -1,15 +1,21 @@
+import { _BALANCE_IS_NOT_ENOUGH_ } from "../../helpers/err-codes.js";
 import { getResponseTemplate } from "../../lib/index.js";
 import { exec, insert, remove, select, update } from "../../providers/db/operations.js";
 
 export const buyProductController = async (req, res) => {
     const result = getResponseTemplate();
     try {
-        await insert(`purchases`, { product_id: req.params.id, uid: req.user.uid });
-        const [{ balance }] = await select(`users`, ["balance"], { uid: req.user.uid });
-        const [{ price }] = await select(`product`, ["price"], { id: req.params.id });
-        const newbalance = +(balance) - (+price);
-        await update(`users`, { balance: newbalance }, { uid: req.user.uid });
+        const query = "UPDATE users u JOIN (SELECT price FROM product WHERE id = ?) p " +
+            "SET u.balance = IF(u.balance >= p.price, u.balance - p.price, u.balance ) " +
+            "WHERE uid = ?";
+
+        const sqlData = await exec(query, [req.params.id, req.user.uid]);
+        if (!sqlData.affectedRows)
+            throw _BALANCE_IS_NOT_ENOUGH_;
+
+        await insert(`purchases`, { product_id: req.params.id, uid: req.user.uid })
         result.data.message = "Request has ended successfully !!!"
+
 
     } catch (err) {
         result.meta.error = {
@@ -41,7 +47,7 @@ export const getLastFiveProductsController = async (req, res) => {
     res.status(result.meta.status).json(result);
 }
 
-export const getPaginatedProductController = async (req, res) => {
+export const getProductController = async (req, res) => {
     const result = getResponseTemplate();
     try {
         const { page = 1, rowsPerPage = 10 } = req.query;

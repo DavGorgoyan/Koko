@@ -8,7 +8,7 @@ const router = Router();
 
 router.use("/personalPage", personalPageRouter);
 router.use("/product", productRouter);
-router.use("/commonBlogs", commonBlogsRouter)
+router.use("/blogs", commonBlogsRouter)
 
 
 
