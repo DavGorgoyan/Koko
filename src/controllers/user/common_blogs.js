@@ -67,7 +67,10 @@ export const getPaginatedBlogsController = async (req, res) => {
 export const getCurrentBlogControlller = async (req, res) => {
     const result = getResponseTemplate();
     try {
-        const selected = await select("blog", "*", { id: req.params.id });
+        const [selected] = await select("blog", "*", { id: req.params.id });
+        let view = selected.views;
+        view++;
+        await update(`blog`, { views: view }, { id: req.params.id })
         result.data = selected;
 
     } catch (err) {
