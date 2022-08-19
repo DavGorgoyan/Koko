@@ -10,7 +10,7 @@ export const buyProductController = async (req, res) => {
             "WHERE uid = ?";
 
         const sqlData = await exec(query, [req.params.id, req.user.uid]);
-        if (!sqlData.affectedRows)
+        if (!sqlData.changedRows)
             throw _BALANCE_IS_NOT_ENOUGH_;
 
         await insert(`purchases`, { product_id: req.params.id, uid: req.user.uid })
