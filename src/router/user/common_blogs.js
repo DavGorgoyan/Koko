@@ -6,8 +6,7 @@ import {
     getCurrentBlogControlller,
     getCommentsToBlogController,
     addCommentController,
-    likeBlogController,
-    dislikeBlogController,
+    rateBlogController,
     deleteCommentController,
     updateCommentsController
 } from "../../controllers/user/common_blogs.js";
@@ -21,7 +20,7 @@ router.get("/comments/:id", getCommentsToBlogController);
 router.post("/comment", addCommentController);
 router.delete("/comment", deleteCommentController)
 router.put("/comment/:id", updateCommentsController)
-router.post("/rateBlog", likeBlogController);
+router.post("/rateBlog", rateBlogController);
 
 
 export default router;

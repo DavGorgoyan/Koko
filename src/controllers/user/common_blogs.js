@@ -120,7 +120,7 @@ export const addCommentController = async (req, res) => {
     res.status(result.meta.status).json(result);
 }
 
-export const likeBlogController = async (req, res) => {
+export const rateBlogController = async (req, res) => {
     const result = getResponseTemplate();
     try {
         if (req.query.rate == 1)
@@ -128,22 +128,6 @@ export const likeBlogController = async (req, res) => {
         else if (req.query.rate == -1)
             await insert(`rate`, { uid: req.user.uid, blog_id: req.query.id, type: -1 })
         result.data.message = "Request has ended successfully !!!";
-
-    } catch (err) {
-        result.meta.error = {
-            code: err.code || err.errCode || 5000,
-            message: err.message || err.errMessage || "Unknown Error"
-        };
-        result.meta.status = err.status || err.statusCode || 500;
-    }
-    res.status(result.meta.status).json(result);
-}
-
-export const dislikeBlogController = async (req, res) => {
-    const result = getResponseTemplate();
-    try {
-        await insert(`rate`, { uid: req.user.uid, blog_id: req.query.id, type: -1 })
-        result.data.message = "Request has ended successfully !!!"
 
     } catch (err) {
         result.meta.error = {
