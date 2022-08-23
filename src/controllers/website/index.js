@@ -5,7 +5,7 @@ export const getLastTenNewsController = async (req, res) => {
     const result = getResponseTemplate();
     try {
         const query =
-            "SELECT id,title,creation_date,image FROM news " +
+            "SELECT id, title, creation_date, image FROM news " +
             "ORDER BY news.id " +
             "LIMIT 10;";
         const selected = await exec(query);
@@ -46,7 +46,7 @@ export const greatestRateBlogsController = async (req, res) => {
             "ON b.id = r.blog_id " +
             "GROUP BY b.id " +
             "ORDER BY IFNULL(SUM(r.type), 0) DESC " +
-            "limit 10";
+            "LIMIT 10";
         const selected = await exec(query)
         result.data = selected;
 

@@ -9,7 +9,7 @@ const router = Router();
 
 router.use('/auth', authRouter);
 router.use("/admin", authMiddleware('admin'), adminRouter);
-router.use("/website", websiteRouter)
+router.use("/website", websiteRouter);
 
 
 
