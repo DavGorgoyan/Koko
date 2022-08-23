@@ -43,5 +43,19 @@ export default {
         title: Joi.string(),
         price: Joi.number()
         }
+    }),
+    add_blog: Joi.object({
+        files: { image: Joi.required() },
+        fields:{
+            description: Joi.string().required(),
+            title: Joi.string().required()
+        }
+    }),
+    update_blog: Joi.object({
+        files: { image: Joi.any() },
+        fields: {
+            description: Joi.string(),
+            title: Joi.string()
+        }
     })
 }
