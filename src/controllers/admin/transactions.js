@@ -18,8 +18,7 @@ export const getTransactionsController = async (req, res) => {
             "LEFT JOIN users u ON B.`uid` = u.`uid` " +
             "ORDER BY bt.creation_date;";
 
-        const sqlData2 = await exec(query2);
-        const sqlData = await exec(query);
+        const [sqlData, sqlData2] = await Promise.all([exec(query), exec(query2)]);
         result.data.purchase_transaction = sqlData;
         result.data.bonus_transaction = sqlData2;
 
