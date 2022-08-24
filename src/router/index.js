@@ -10,8 +10,8 @@ const router = Router();
 
 router.use('/auth', authRouter);
 router.use("/admin", authMiddleware('admin'), adminRouter);
+router.use("/user", authMiddleware("users"), userRouter);
 router.use("/website", websiteRouter);
-router.use("/user", authMiddleware("users"),  userRouter);
 
 
 export default router;
