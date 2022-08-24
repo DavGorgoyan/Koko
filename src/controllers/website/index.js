@@ -1,5 +1,5 @@
 import { getResponseTemplate } from "../../lib/index.js";
-import { insert, remove, select, update, exec } from "../../providers/db/operations.js";
+import { select, exec } from "../../providers/db/operations.js";
 
 export const getLastTenNewsController = async (req, res) => {
     const result = getResponseTemplate();
