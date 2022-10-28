@@ -4,6 +4,9 @@
 
 import app from "./server.js";
 import socketInit from "./providers/socket/index.js";
+import scheduleStart from "./providers/schedule/index.js"
+
+scheduleStart();
 
 
 const PORT = process.env.PORT || 3000;
